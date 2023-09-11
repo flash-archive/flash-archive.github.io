@@ -1,0 +1,47 @@
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    overflow: hidden;
+}
+
+body {
+    background: #87CEEB;
+    font-family: 'Quicksand', serif;
+}
+
+h1 {
+    padding: 10px;
+    text-align: center;
+    font-family: 'Quicksand', serif;
+}
+
+a:link {
+    color: blue;
+    font-family: 'Quicksand', serif;
+}
+
+a:visited {
+    color: darkblue;
+    font-family: 'Quicksand', serif;
+}
+
+a:hover {
+    color: lightblue;
+    font-family: 'Quicksand', serif;
+}
+
+a:active {
+    color: darkblue;
+    font-family: 'Quicksand', serif;
+}
+
+table,
+th,
+td {
+    border-style: solid;
+    border-width: 3px;
+    border-color: black;
+    border-collapse: collapse;
+}

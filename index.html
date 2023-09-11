@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Home</title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+</head>
+
+<body class="container">
+    <main>
+        <section>
+            <header>
+                <h1 id="headerName"></h1>
+            </header>
+            <div id="ruffleContainer"></div>
+            <footer>
+                <p><select id="swfList"></select> © 2023 <a href="about.html">About</a></p>
+            </footer> <!-- The heart of the whole site. This actually renders the SWF files. -->
+        </section>
+    </main>
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script> <!-- Ruffle. Needed to run the SWF files. -->
+    <script>
+        fetch("./games.json")
+            .then(response => response.json())
+            .then(data => {
+                const names = data.name.split("|");
+                const swfs = data.swf.split("|");
+                const select = document.getElementById("swfList");
+                for (let i = 0; i < names.length; i++) {
+                    const option = document.createElement("option");
+                    option.textContent = names[i];
+                    option.value = "./swf/" + swfs[i];
+                    select.appendChild(option);
+                } //Select tag builder. Will add entries based off the json file in the root.
+                document.getElementById("swfList").onchange = function () {
+                    localStorage.setItem("selectedSwf", document.getElementById("swfList").value);
+                } //Select item saver. Basically saves a copy of the select tag's items.
+                const ruffleObject = window.RufflePlayer.newest();
+                const ruffleElement = ruffleObject.createPlayer();
+                document.querySelector("#ruffleContainer").appendChild(ruffleElement);
+                if (localStorage.getItem("selectedSwf")) {
+                    document.getElementById("swfList").value = localStorage.getItem("selectedSwf");
+                    document.getElementById("headerName").textContent = document.getElementById("swfList").options[document.getElementById("swfList").selectedIndex].text;
+                } //Select item loader. Simple but functional way to keep the last set value so that the games can actually switch properly.
+                ruffleElement.load({ "url": document.getElementById("swfList").value, "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm", "allowNetworking": "none" });
+                ruffleElement.addEventListener('loadedmetadata', () => {
+                    ruffleElement.style.width = ruffleElement.metadata.width + 'px';
+                    ruffleElement.style.height = ruffleElement.metadata.height + 'px';
+                })
+                document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("click", () => { window.location.reload() }) })
+            });
+    </script>
+</body>
+
+</html>

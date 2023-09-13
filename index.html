@@ -30,12 +30,12 @@
                 for (let key in data) {
                     const option = document.createElement("option");
                     option.textContent = data[key];
-                    option.value = "./swf/" + data[key].toLowerCase().replace(/ /g, '_') + ".swf";
+                    option.value = "./swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
                     select.appendChild(option);
                 } //Select tag builder. Will add entries based off the json file in the root.
                 document.getElementById("swfList").onchange = function () {
                     localStorage.setItem("selectedSwf", document.getElementById("swfList").value);
-                } //Select item saver. Basically saves a copy of the select tag's items.
+                } //Select item saver. Basically saves a copy of the select tag"s items.
                 const ruffleObject = window.RufflePlayer.newest();
                 const ruffleElement = ruffleObject.createPlayer();
                 document.querySelector("#ruffleContainer").appendChild(ruffleElement);
@@ -44,11 +44,15 @@
                     document.getElementById("headerName").textContent = document.getElementById("swfList").options[document.getElementById("swfList").selectedIndex].text;
                 } //Select item loader. Simple but functional way to keep the last set value so that the games can actually switch properly.
                 ruffleElement.load({ "url": document.getElementById("swfList").value, "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
-                ruffleElement.addEventListener('loadedmetadata', () => {
-                    ruffleElement.style.width = ruffleElement.metadata.width + 'px';
-                    ruffleElement.style.height = ruffleElement.metadata.height + 'px';
+                ruffleElement.addEventListener("loadedmetadata", () => {
+                    ruffleElement.style.width = ruffleElement.metadata.width + "px";
+                    ruffleElement.style.height = ruffleElement.metadata.height + "px";
                 })
-                document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("click", () => { window.location.reload() }) })
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("touchend", () => { window.location.reload() }) })
+                } else {
+                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("mouseup", () => { window.location.reload() }) })
+                } //Checks if you are using mobile or desktop and changes the event listener to the corresponding trigger.
             });
     </script>
 </body>

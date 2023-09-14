@@ -49,7 +49,7 @@
                     ruffleElement.style.height = ruffleElement.metadata.height + "px";
                 })
                 if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("touchstart", () => { window.location.reload() }) })
+                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("change", () => { window.location.reload() }) })
                 } else {
                     document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("mouseup", () => { window.location.reload() }) })
                 } //Checks if you are using mobile or desktop and changes the event listener to the corresponding trigger.

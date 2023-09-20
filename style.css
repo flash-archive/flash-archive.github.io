@@ -45,3 +45,28 @@ td {
     border-color: black;
     border-collapse: collapse;
 }
+
+button {
+    background-color: white;
+    border: 1px solid #87CEEB;
+    color: black;
+    padding: 10px 10px;
+    cursor: pointer;
+  }
+
+button:hover{
+    background-color: lightgray;
+    border: 1px solid #87CEEB;
+    color: black;
+    padding: 10px 10px;
+    cursor: pointer;
+}
+
+.scrollDiv {
+    overflow-y: scroll; 
+    height:98vh;
+    width: 10vw;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+}

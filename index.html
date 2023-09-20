@@ -9,18 +9,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
 </head>
 
-<body class="container">
+<body>
     <main>
-        <section>
+        <section class="container">
             <header>
                 <h1 id="headerName"></h1>
             </header>
-            <div id="ruffleContainer"></div>
+            <div id="ruffleContainer"></div> <!-- The heart of the whole site. This actually renders the SWF files. -->
             <footer>
-                <p><select id="swfList"></select> © 2023 <a href="about.html">About</a></p>
-            </footer> <!-- The heart of the whole site. This actually renders the SWF files. -->
+                <p>© 2023 <a href="about.html">About</a></p>
+            </footer> 
         </section>
     </main>
+    <div class="scrollDiv", id="swfList"></div>
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script> <!-- Ruffle. Needed to run the SWF files. -->
     <script>
         fetch("./games.json")
@@ -28,31 +29,26 @@
             .then(data => {
                 const select = document.getElementById("swfList");
                 for (let key in data) {
-                    const option = document.createElement("option");
-                    option.textContent = data[key];
-                    option.value = "./swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
-                    select.appendChild(option);
-                } //Select tag builder. Will add entries based off the json file in the root.
-                document.getElementById("swfList").onchange = function () {
-                    localStorage.setItem("selectedSwf", document.getElementById("swfList").value);
-                } //Select item saver. Basically saves a copy of the select tag"s items.
+                    const button = document.createElement("button");
+                    button.textContent = data[key];
+                    button.value = "./swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
+                    button.addEventListener("click", () => { 
+                        localStorage.setItem("selectedSwfPath", button.value);
+                        localStorage.setItem("selectedSwfName", button.textContent);
+                        window.location.reload();
+                     });
+                    select.appendChild(button);
+                } //Button builder. Will add entries based off the json file in the root.
                 const ruffleObject = window.RufflePlayer.newest();
                 const ruffleElement = ruffleObject.createPlayer();
                 document.querySelector("#ruffleContainer").appendChild(ruffleElement);
                 if (localStorage.getItem("selectedSwf")) {
-                    document.getElementById("swfList").value = localStorage.getItem("selectedSwf");
-                    document.getElementById("headerName").textContent = document.getElementById("swfList").options[document.getElementById("swfList").selectedIndex].text;
-                } //Select item loader. Simple but functional way to keep the last set value so that the games can actually switch properly.
-                ruffleElement.load({ "url": document.getElementById("swfList").value, "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
-                ruffleElement.addEventListener("loadedmetadata", () => {
+                    document.getElementById("headerName").textContent = localStorage.getItem("selectedSwfName");
+                    ruffleElement.load({ "url": localStorage.getItem("selectedSwfPath"), "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
+                    ruffleElement.addEventListener("loadedmetadata", () => {
                     ruffleElement.style.width = ruffleElement.metadata.width + "px";
                     ruffleElement.style.height = ruffleElement.metadata.height + "px";
-                })
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("change", () => { window.location.reload() }) })
-                } else {
-                    document.querySelectorAll("#swfList option").forEach((e) => { e.addEventListener("mouseup", () => { window.location.reload() }) })
-                } //Checks if you are using mobile or desktop and changes the event listener to the corresponding trigger.
+                })} //Select item loader. Simple but functional way to keep the last set value so that the games can actually switch properly.
             });
     </script>
 </body>

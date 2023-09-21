@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="description" content="A simple website to play free flash games on in the browser on any device.">
     <title>Home</title>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./style.css">
@@ -15,40 +16,40 @@
             <header>
                 <h1 id="headerName"></h1>
             </header>
-            <div id="ruffleContainer"></div> <!-- The heart of the whole site. This actually renders the SWF files. -->
+            <div id="ruffleContainer"></div>
             <footer>
                 <p>© 2023 <a href="about.html">About</a></p>
             </footer> 
         </section>
     </main>
     <div class="scrollDiv", id="swfList"></div>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script> <!-- Ruffle. Needed to run the SWF files. -->
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
-        fetch("./games.json")
+        fetch("https://raw.githubusercontent.com/flash-archive/flash-archive/main/index.json")
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById("swfList");
                 for (let key in data) {
                     const button = document.createElement("button");
                     button.textContent = data[key];
-                    button.value = "./swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
+                    button.value = "https://raw.githubusercontent.com/flash-archive/flash-archive/main/swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
                     button.addEventListener("click", () => { 
                         localStorage.setItem("selectedSwfPath", button.value);
                         localStorage.setItem("selectedSwfName", button.textContent);
                         window.location.reload();
                      });
                     select.appendChild(button);
-                } //Button builder. Will add entries based off the json file in the root.
-                const ruffleObject = window.RufflePlayer.newest();
-                const ruffleElement = ruffleObject.createPlayer();
-                document.querySelector("#ruffleContainer").appendChild(ruffleElement);
-                if (localStorage.getItem("selectedSwf")) {
+                }
+                if (localStorage.getItem("selectedSwfPath")) {
                     document.getElementById("headerName").textContent = localStorage.getItem("selectedSwfName");
+                    const ruffleObject = window.RufflePlayer.newest();
+                    const ruffleElement = ruffleObject.createPlayer();
+                    document.querySelector("#ruffleContainer").appendChild(ruffleElement);
                     ruffleElement.load({ "url": localStorage.getItem("selectedSwfPath"), "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
                     ruffleElement.addEventListener("loadedmetadata", () => {
                     ruffleElement.style.width = ruffleElement.metadata.width + "px";
                     ruffleElement.style.height = ruffleElement.metadata.height + "px";
-                })} //Select item loader. Simple but functional way to keep the last set value so that the games can actually switch properly.
+                })}
             });
     </script>
 </body>

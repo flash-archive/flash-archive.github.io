@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="A simple website to play free flash games on in the browser on any device.">
     <title>Home</title>
+    <meta charset="utf-8">
+    <meta name="description" content="A simple flash site that allows you to play games for free on any device.">
+    <meta name="keywords" content="flash, games, ruffle, free, play, free games, flash games, flash free games, flash">
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
@@ -12,19 +13,29 @@
 
 <body>
     <main>
-        <section class="container">
+        <section id="container">
             <header>
                 <h1 id="headerName"></h1>
             </header>
             <div id="ruffleContainer"></div>
-            <footer>
-                <p>© 2023 <a href="about.html">About</a></p>
-            </footer> 
         </section>
     </main>
-    <div class="scrollDiv", id="swfList"></div>
+    <div class="scrollDiv" id="swfList"></div>
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
+        function loadSWF() {
+            document.getElementById("headerName").textContent = localStorage.getItem("selectedSwfName");
+            ruffleElement.load({ "url": localStorage.getItem("selectedSwfPath"), "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
+            ruffleElement.addEventListener("loadedmetadata", () => {
+                ruffleElement.style.width = ruffleElement.metadata.width + "px";
+                ruffleElement.style.height = ruffleElement.metadata.height + "px";
+            })
+        };
+
+        const ruffleObject = window.RufflePlayer.newest();
+        const ruffleElement = ruffleObject.createPlayer();
+        document.querySelector("#ruffleContainer").appendChild(ruffleElement);
+
         fetch("https://raw.githubusercontent.com/flash-archive/flash-archive/main/index.json")
             .then(response => response.json())
             .then(data => {
@@ -33,23 +44,16 @@
                     const button = document.createElement("button");
                     button.textContent = data[key];
                     button.value = "https://raw.githubusercontent.com/flash-archive/flash-archive/main/swf/" + data[key].toLowerCase().replace(/ /g, "_") + ".swf";
-                    button.addEventListener("click", () => { 
+                    button.addEventListener("click", () => {
                         localStorage.setItem("selectedSwfPath", button.value);
                         localStorage.setItem("selectedSwfName", button.textContent);
-                        window.location.reload();
-                     });
+                        loadSWF();
+                    });
                     select.appendChild(button);
                 }
                 if (localStorage.getItem("selectedSwfPath")) {
-                    document.getElementById("headerName").textContent = localStorage.getItem("selectedSwfName");
-                    const ruffleObject = window.RufflePlayer.newest();
-                    const ruffleElement = ruffleObject.createPlayer();
-                    document.querySelector("#ruffleContainer").appendChild(ruffleElement);
-                    ruffleElement.load({ "url": localStorage.getItem("selectedSwfPath"), "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
-                    ruffleElement.addEventListener("loadedmetadata", () => {
-                    ruffleElement.style.width = ruffleElement.metadata.width + "px";
-                    ruffleElement.style.height = ruffleElement.metadata.height + "px";
-                })}
+                    loadSWF();
+                }
             });
     </script>
 </body>

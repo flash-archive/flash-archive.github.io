@@ -19,18 +19,38 @@
             </header>
             <div id="ruffleContainer"></div>
         </section>
+        <section class="swfColumn slideIn" id="swfColumn">
+            <div class="scrollDiv slideIn" id="swfList"></div>
+            <button class="swfButton slideIn" id="swfButton" onclick="showHide()"></button>
+        </section>
     </main>
-    <div class="scrollDiv" id="swfList"></div>
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
         function loadSWF() {
             document.getElementById("headerName").textContent = localStorage.getItem("selectedSwfName");
-            ruffleElement.load({ "url": localStorage.getItem("selectedSwfPath"), "quality": "best", "scale": "exactfit", "forceScale": true, "openUrlMode": "confirm" });
+            ruffleElement.load({
+                "url": localStorage.getItem("selectedSwfPath"),
+                "quality": "best",
+                "scale": "exactfit",
+                "forceScale": true,
+                "openUrlMode": "confirm"
+            });
             ruffleElement.addEventListener("loadedmetadata", () => {
                 ruffleElement.style.width = ruffleElement.metadata.width + "px";
                 ruffleElement.style.height = ruffleElement.metadata.height + "px";
-            })
+            });
         };
+
+        function showHide() {
+            const swfColumn = document.getElementById("swfColumn")
+            if (swfColumn.classList[1] === "slideIn") {
+                swfColumn.classList.remove("slideIn");
+                swfColumn.classList.add("slideOut");
+            } else {
+                swfColumn.classList.remove("slideOut");
+                swfColumn.classList.add("slideIn");
+            }
+        }
 
         const ruffleObject = window.RufflePlayer.newest();
         const ruffleElement = ruffleObject.createPlayer();
@@ -50,10 +70,10 @@
                         loadSWF();
                     });
                     select.appendChild(button);
-                }
+                };
                 if (localStorage.getItem("selectedSwfPath")) {
                     loadSWF();
-                }
+                };
             });
     </script>
 </body>

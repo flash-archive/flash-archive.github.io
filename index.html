@@ -31,8 +31,6 @@
             ruffleElement.load({
                 "url": localStorage.getItem("selectedSwfPath"),
                 "quality": "best",
-                "scale": "exactfit",
-                "forceScale": true,
                 "openUrlMode": "confirm"
             });
             ruffleElement.addEventListener("loadedmetadata", () => {
